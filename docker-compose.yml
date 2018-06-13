@@ -1,0 +1,40 @@
+version: '2'
+services:
+
+#postgres:
+#    image: postgres
+#    volumes_from:
+#        - application
+#    volumes:
+#        - logs/postgresql/:/var/log/postgresql
+#    ports:
+#        - 5432:5432
+
+    db:
+        image: mysql
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: symfony
+            MYSQL_USER: symfony
+            MYSQL_PASSWORD: symfony
+    php:
+        build: ./php-fpm
+        ports:
+            - "9000:9000"
+        volumes:
+            - ./symfony:/var/www/symfony:cached
+            - ./logs/symfony:/var/www/symfony/var/logs:cached
+        links:
+            - db
+    nginx:
+        build: ./nginx
+        ports:
+            - "80:80"
+        links:
+            - php
+        volumes_from:
+            - php
+        volumes:
+            - ./logs/nginx/:/var/log/nginx:cached
