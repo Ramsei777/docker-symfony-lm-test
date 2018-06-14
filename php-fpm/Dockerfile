@@ -1,6 +1,6 @@
 FROM alpine:3.6
 
-LABEL maintainer="Vincent Composieux <vincent.composieux@gmail.com>"
+LABEL maintainer="RZ <rzibra@media5.com>"
 
 RUN apk add --update \
     php7-fpm \

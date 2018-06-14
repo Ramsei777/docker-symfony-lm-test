@@ -11,14 +11,39 @@ services:
 #        - 5432:5432
 
     db:
-        image: mysql
-        ports:
-            - "3306:3306"
+        image: postgres:9.6-alpine
+        container_name: postgres
         environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: symfony
-            MYSQL_USER: symfony
-            MYSQL_PASSWORD: symfony
+            - POSTGRES_DB=symfony
+            - POSTGRES_USER=symfony
+            - POSTGRES_PASSWORD=symfony
+        volumes:
+            - db-data:/var/lib/postgresql/data:rw
+            # Можно использовать привязанный к контейнеру каталог, уменьшит возможность случайного удаления тома.
+            # - ./docker/db/data:/var/lib/postgresql/data:rw
+        ports:
+            - "5432:5432"
+
+    adminer:
+      image: adminer
+      container_name: adminer
+      depends_on:
+          - postgres
+      restart: always
+      ports:
+        - 2000:8080
+
+
+   # db:
+   #     image: mysql
+   #     ports:
+   #         - "3306:3306"
+   #     environment:
+   #         MYSQL_ROOT_PASSWORD: root
+   #         MYSQL_DATABASE: symfony
+   #         MYSQL_USER: symfony
+   #         MYSQL_PASSWORD: symfony
+   
     php:
         build: ./php-fpm
         ports:
